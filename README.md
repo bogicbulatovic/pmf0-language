@@ -4,7 +4,8 @@ This repository contains the lexer and parser implementations for the PMF0 langu
 -Install flex and bison tools, and 32bit gcc
 -Clone git repository
 
-##Language explanation
+##Language explanation:
+Lexical Characteristics:
 Keywords: Reserved keywords are indicated in uppercase letters. They cannot be used as identifiers or redefined.
 Identifier: A sequence of letters, digits, and underscores that starts with a letter. "Pmf0" is case-sensitive, meaning "if" is a keyword, but "IF" is an identifier. Identifiers can be up to 31 characters long.
 Whitespace: Spaces, tabs, and newlines separate tokens but are otherwise ignored. Keywords and tokens must be separated by whitespace or a token that is neither a keyword nor an identifier. For example, "ifintthis" is one identifier, not three keywords, while "if(23this" represents four tokens.
@@ -17,4 +18,6 @@ Arithmetic operators: + - * / % \
 Comparison operators: < <= > >= = == !=
 Logical operators: && || !
 Other punctuation marks: ; , . ( )
+Single-Line Comment: Begins with "//".
+Multi-Line Comment: Begins with "/" and ends with the first subsequent "/". All symbols are allowed in comments, except the sequence "*/" which terminates the comment. Nesting comments is not possible.
 These lexical characteristics define the structure and rules for tokenizing input in the "pmf0" language.

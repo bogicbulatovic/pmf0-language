@@ -3,24 +3,21 @@
     #include <stdlib.h>
     #include <string.h>
 
-    #define IF 1
-
 %}
 
 %%
 
-"if"                                            {printf("kljucna rijec");}
-"true"|"false"                                  {printf("S Boolean: %s\n", yytext);}
-[a-zA-Z][a-zA-Z]*[0-9]*_*{0,31}                 {printf("S Identifikator: %s\n", yytext);}
+"true"|"false"                                  {printf("Boolean: %s\n", yytext);}
+[a-zA-Z][a-zA-Z]*[0-9]*_*{0,31}                 {printf("Identifikator: %s\n", yytext);}
 [ \t\n\r ]                                      {/*ignorisem bjeline*/}
-[0-9]+                                          {printf("DEC");}
+[0-9]+                                          {printf("DEC: %s\n", yytext);}
 (0X|0x)[0-9a-fA-F]+                             {printf("HEX: %s\n", yytext);}
 [0-9]+\.([0-9]*|[0-9]*[eE]?[+-]?[0-9]+)         {printf("DOUBLE: %s\n", yytext);}
 \"[^\n\"]*\"                                    {printf("STRING: %s\n", yytext);}
-[";"","".""("")"]                               {printf("znak inerpukcije");} 
+[";"","".""("")"]                               {printf("Znak inerpukcije");} 
 ["+""-""*""/""%""\""<""<="">"">=""=""==""!=""&&""||""!"]                {printf("Operator");}
-"//"(.)*\n                                      {/* Ignorisanje komentara u jednoj liniji */}
-"/*"([^*]|(\*+[^*/]))*\*+"/"                    { /* Ignorisanje komentara u više linija */ }
+"//"(.)*\n                                      {printf("Komentar u jednoj liniji: %s\n",yytext);}
+"/*"([^*]|(\*+[^*/]))*\*+"*/"                   {printf("Komentar u vise linija: %s\n", yytext);}
 
 
 %%

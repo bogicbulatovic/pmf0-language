@@ -63,7 +63,14 @@
                                                     yylval.doubleValue = val;
                                                     return T_DOUBLE;
                                                 }
-\"[^\n\"]*\"                                    {printf("STRING: %s\n", yytext);}
+\"[^\"\n]*\"                                    {
+                                                    if (strchr(yytext, '\n') != NULL) {
+                                                        fprintf(stderr, "Greška: String konstanta ne može biti u više linija, na liniji %d.\n", yylineno);
+                                                        exit(EXIT_FAILURE);
+                                                    }
+                                                    yylval.ident = strdup(yytext);
+                                                    return T_STRING;
+                                                }
 "+"                                             { return T_PLUS; }
 "-"                                             { return T_MINUS; }
 "*"                                             { return T_MULT; }

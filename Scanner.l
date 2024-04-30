@@ -55,7 +55,12 @@
                                                     return T_INT;
                                                 }
 [0-9]+\.([0-9]*|[0-9]*[eE]?[+-]?[0-9]+)         {
-                                                    yylval.doubleValue = atof(yytext);
+                                                    double val = atof(yytext);
+                                                    if (val == 0 && strcmp(yytext, "0.0") != 0) {
+                                                        fprintf(stderr, "Greška: Neispravan double izraz na liniji %d.\n", yylineno);
+                                                        exit(EXIT_FAILURE);
+                                                    }
+                                                    yylval.doubleValue = val;
                                                     return T_DOUBLE;
                                                 }
 \"[^\n\"]*\"                                    {printf("STRING: %s\n", yytext);}

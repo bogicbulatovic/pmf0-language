@@ -92,15 +92,28 @@
 "."                                             { return T_DOT; }
 "("                                             { return T_LEFT_PAREN; }
 ")"                                             { return T_RIGHT_PAREN; }
-"//"                                            { BEGIN(SINGLE_LINE_COMMENT); }
+"//"                                            {
+                                                    BEGIN(SINGLE_LINE_COMMENT);
+                                                    yylloc.first_line = yylineno;
+                                                    yylloc.first_column = yycolumn - 1; // Jer komentar ne uključuje "//"
+                                                }
 "/*"                                            { BEGIN(MULTILINE_COMMENT); }
 \n                                              { 
                                                     printf("Trenutni red: %d\n", yylineno); 
                                                     yycolumn = 1; 
                                                 }
 <SINGLE_LINE_COMMENT>{
-\n { BEGIN(INITIAL); }
-. { }
+    [^\n]* {
+        
+        if (yylineno > yylloc.first_line) {
+            fprintf(stderr, "Greška: Single-line komentar nije završen na kraju linije na liniji %d.\n", yylloc.first_line);
+            exit(EXIT_FAILURE);
+        }
+    }
+    \n {
+        fprintf(stderr, "Greška: Single-line komentar nije završen na kraju linije na liniji %d.\n", yylloc.first_line);
+        exit(EXIT_FAILURE);
+    }
 }
 
 <MULTILINE_COMMENT>{

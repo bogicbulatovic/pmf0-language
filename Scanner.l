@@ -97,7 +97,11 @@
                                                     yylloc.first_line = yylineno;
                                                     yylloc.first_column = yycolumn - 1; // Jer komentar ne uključuje "//"
                                                 }
-"/*"                                            { BEGIN(MULTILINE_COMMENT); }
+"/*"                                            {
+                                                    BEGIN(MULTILINE_COMMENT);
+                                                    yylloc.first_line = yylineno;
+                                                    yylloc.first_column = yycolumn - 1; // Jer komentar ne uključuje "/*"
+                                                }
 \n                                              { 
                                                     printf("Trenutni red: %d\n", yylineno); 
                                                     yycolumn = 1; 
@@ -117,9 +121,19 @@
 }
 
 <MULTILINE_COMMENT>{
-"*/" { BEGIN(INITIAL); }
-. { }
-\n { }
+    [^*\n]* {
+        if (yylineno > yylloc.first_line) {
+            fprintf(stderr, "Greška: Multiline komentar nije završen na istoj liniji na liniji %d.\n", yylloc.first_line);
+            exit(EXIT_FAILURE);
+        }
+    }
+    \n {
+        fprintf(stderr, "Greška: Multiline komentar nije završen na istoj liniji na liniji %d.\n", yylloc.first_line);
+        exit(EXIT_FAILURE);
+    }
+    "*/" {
+        BEGIN(INITIAL);
+    }
 }
 
 .                                               { return yytext[0]; }

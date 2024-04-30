@@ -4,9 +4,10 @@
     #include <string.h>
 
     int yycolumn = 1;
-    yylloc.first_line = yylloc.last_line = yylineno;
-    yylloc.first_column = yycolumn;
-    yylloc.last_column = yycolumn + yyleng - 1;
+    #define YY_USER_ACTION \
+    yylloc.first_line = yylloc.last_line = yylineno; \
+    yylloc.first_column = yycolumn; \
+    yylloc.last_column = yycolumn + yyleng - 1; \
     yycolumn += yyleng;
 
 %}
@@ -36,7 +37,11 @@
 ":="                                            { return T_ASSIGN; }
 
 "true"|"false"                                  {return T_BOOLEAN;}
-[a-zA-Z][a-zA-Z]*[0-9]*_*{0,31}                 {
+[a-zA-Z][a-zA-Z]*[0-9]*_*                       {
+                                                    if(strlen(yytext) > 31){
+                                                        fprintf(stderr, "Greška: Identifikator na liniji %d je predugačak.\n", yylineno);
+                                                        exit(EXIT_FAILURE);
+                                                    }
                                                     yylval.ident = strdup(yytext);
                                                     return T_IDENT;
                                                 }

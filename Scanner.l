@@ -4,6 +4,10 @@
     #include <string.h>
 
     int yycolumn = 1;
+    yylloc.first_line = yylloc.last_line = yylineno;
+    yylloc.first_column = yycolumn;
+    yylloc.last_column = yycolumn + yyleng - 1;
+    yycolumn += yyleng;
 
 %}
 

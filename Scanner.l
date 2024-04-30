@@ -10,6 +10,20 @@
 
 %%
 
+"#define"                                       { return T_DEFINE; }
+"IF"                                            { return T_IF; }
+"LET"                                           { return T_LET; }
+"IN"                                            { return T_IN; }
+"END"                                           { return T_END; }
+"INTEGER"                                       { return T_INTEGER; }
+"SKIP"                                          { return T_SKIP; }
+"THEN"                                          { return T_THEN; }
+"ELSE"                                          { return T_ELSE; }
+"WHILE"                                         { return T_WHILE; }
+"READ"                                          { return T_READ; }
+"WRITE"                                         { return T_WRITE; }
+":="                                            { return T_ASSIGN; }
+
 "true"|"false"                                  {return T_BOOLEAN;}
 [a-zA-Z][a-zA-Z]*[0-9]*_*{0,31}                 {
                                                     yylval.ident = strdup(yytext);

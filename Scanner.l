@@ -3,10 +3,14 @@
     #include <stdlib.h>
     #include <string.h>
 
+    int yycolumn = 1;
+
 %}
 
 %x SINGLE_LINE_COMMENT
 %x MULTILINE_COMMENT
+%option noyywrap
+%option yylineno
 
 %%
 
@@ -22,6 +26,9 @@
 "WHILE"                                         { return T_WHILE; }
 "READ"                                          { return T_READ; }
 "WRITE"                                         { return T_WRITE; }
+"FI"                                            { return T_FI; }
+"WHILE"                                         { return T_WHILE; }
+"DO"                                            { return T_DO; }
 ":="                                            { return T_ASSIGN; }
 
 "true"|"false"                                  {return T_BOOLEAN;}
@@ -66,6 +73,10 @@
 ")"                                             { return T_RIGHT_PAREN; }
 "//"                                            { BEGIN(SINGLE_LINE_COMMENT); }
 "/*"                                            { BEGIN(MULTILINE_COMMENT); }
+\n                                              { 
+                                                    printf("Trenutni red: %d\n", yylineno); 
+                                                    yycolumn = 1; 
+                                                }
 <SINGLE_LINE_COMMENT>{
 \n { BEGIN(INITIAL); }
 . { }
@@ -76,6 +87,8 @@
 . { }
 \n { }
 }
+
+.                                               { return yytext[0]; }
 
 %%
 
